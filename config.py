@@ -105,7 +105,7 @@ def configDDNS():
     print("#  If there are some bugs, please contact me.                                    #")
     print("#  Author: TongYifan                                                             #")
     print("#  Email: tongyfan@gmail.com                                                     #")
-    print("#  Version: 0.1.20180427                                                         #")
+    print("#  Version: 0.1.20180429                                                         #")
     print(" ################################################################################")
     print()
     input("Press any key to start configure...")
