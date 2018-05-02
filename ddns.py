@@ -3,8 +3,9 @@ import socket
 import requests
 import json
 import logging
-
+import os
 import time
+import sys
 
 log_filename = "logging.log"
 logging.basicConfig(level=logging.INFO,
@@ -17,9 +18,13 @@ logging.basicConfig(level=logging.INFO,
 global IP4TESTADDR, IP6TESTADDR, INTERVAL, ENABLELOCALIPv4, ENABLEIPv6, AUTHKEY, ZONEID, IPv4ID, IPv6ID, AUTHEMAIL, DOMAIN4, DOMAIN6
 global now_ipv4, now_ipv6
 def readconfig():
+
     global IP4TESTADDR, IP6TESTADDR, INTERVAL, ENABLELOCALIPv4, ENABLEIPv6, AUTHKEY, ZONEID, IPv4ID, IPv6ID, AUTHEMAIL, DOMAIN4, DOMAIN6
     config = configparser.ConfigParser()
-    config.read("config.ini")
+    dirname, filename = os.path.split(os.path.abspath(sys.argv[0]))
+    logging.debug(dirname)
+    config.read(dirname+"/config.ini")
+    logging.debug(config.sections())
     IP4TESTADDR = config['Base']['ip4testaddr'].split(',')
     IP6TESTADDR = config['Base']['ip6testaddr'].split(',')
     INTERVAL = config['Base']['interval']
