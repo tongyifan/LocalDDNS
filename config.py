@@ -146,69 +146,81 @@ def configDDNS():
     print("These key will save in [config.ini] and WILL NOT UPLOAD TO THE INTERNET.")
     print("In fact, you also can't upload it online, it will make your domain stolen.")
     print("If you don't know where to find these key, read the README in Github.")
-    config['CloudFlare']['ZONEID'] = input("Please input zone_id of the domain you used:")
-    config['CloudFlare']['AUTHKEY'] = input("Please input your API key:")
-    config['CloudFlare']['AUTHEMAIL'] = input("Please input your email in CloudFlare:")
+    in0 = input("Please input zone_id of the domain you used(Press ENTER use old one):")
+    if in0 != "":
+        config['CloudFlare']['ZONEID'] = in0
+    in1 = input("Please input your API key(Press ENTER use old one):")
+    if in1 != "":
+        config['CloudFlare']['AUTHKEY'] = in1
+    in2 = input("Please input your email in CloudFlare(Press ENTER use old one):")
+    if in2 != "":
+        config['CloudFlare']['AUTHEMAIL'] = in2
     print("Tips: One name can have two or more records.")
     print("For example, you can use ddns.example.com for both IPv4(A) and IPv6(AAAA) record")
-    config['CloudFlare']['DOMAIN4'] = input("Please input DNS name for IPv4(eg. ddns.example.com)")
-    config['CloudFlare']['DOMAIN6'] = input("Please input DNS name for IPv6(eg. ddns.example.com)")
-
-    # check IPv6 domain name and get ID
-    print("Searching the record in Type [A], name [" + config['CloudFlare']['DOMAIN4'] + "]")
-    result = checkrecord("A", config['CloudFlare']['DOMAIN4'])
-    if result['result_info']['count'] == 1:
-        print("Check Type [A], domain name [" + config['CloudFlare']['DOMAIN4'] + "] successfully!")
-        config['CloudFlare']['IPv4ID'] = result['result'][0]['id']
-    elif result['result_info']['count'] == 0:
-        c5 = input("Nothing matched! Do you want to create one?(y/n, DEFAULT=n):")
-        if c5 == "y":
-            create = createdrecord("A", config['CloudFlare']['DOMAIN4'])
-            if create['success']:
-                config['CloudFlare']['IPv4ID'] = create['result'][0]['id']
-            else:
-                print(create['errors'][0]['message'])
-        else:
-            config['CloudFlare']['IPv4ID'] = ""
-    elif result['result_info']['count'] > 1:
-        i = 1
-        for j in result['result']:
-            print(str(i) + '.' + j)
-            i += 1
-        c6 = input("Please choose one:")
-        if 0 < c6 < i:
-            config['CloudFlare']['IPv4ID'] = result['result'][c6]['id']
-        else:
-            print("Invalid input, use the first")
+    while True:
+        config['CloudFlare']['DOMAIN4'] = input("Please input DNS name for IPv4(eg. ddns.example.com)")
+        # check IPv4 domain name and get ID
+        print("Searching the record in Type [A], name [" + config['CloudFlare']['DOMAIN4'] + "]")
+        result = checkrecord("A", config['CloudFlare']['DOMAIN4'])
+        if result['result_info']['count'] == 1:
+            print("Check Type [A], domain name [" + config['CloudFlare']['DOMAIN4'] + "] successfully!")
             config['CloudFlare']['IPv4ID'] = result['result'][0]['id']
-
-    # check IPv6 domain name and get ID
-    print("Searching the record in Type [AAAA], name [" + config['CloudFlare']['DOMAIN6'] + "]")
-    result = checkrecord("AAAA", config['CloudFlare']['DOMAIN6'])
-    if result['result_info']['count'] == 1:
-        print("Check Type [AAAA], domain name [" + config['CloudFlare']['DOMAIN6'] + "] successfully!")
-        config['CloudFlare']['IPv6ID'] = result['result'][0]['id']
-    elif result['result_info']['count'] == 0:
-        c7 = input("Nothing matched! Do you want to create one?(y/n, DEFAULT=n):")
-        if c7 == "y":
-            create = createdrecord("AAAA", config['CloudFlare']['DOMAIN6'])
-            if create['success']:
-                config['CloudFlare']['IPv6ID'] = create['result'][0]['id']
+        elif result['result_info']['count'] == 0:
+            c5 = input("Nothing matched! Do you want to create this?(y/n, DEFAULT=n):")
+            if c5 == "y":
+                create = createdrecord("A", config['CloudFlare']['DOMAIN4'])
+                if create['success']:
+                    config['CloudFlare']['IPv4ID'] = create['result']['id']
+                    print("Create Success!")
+                else:
+                    print(create['errors'][0]['message'])
             else:
-                print(create['errors'][0]['message'])
-        else:
-            config['CloudFlare']['IPv6ID'] = ""
-    elif result['result_info']['count'] > 1:
-        i = 1
-        for j in result['result']:
-            print(str(i) + '.' + j)
-            i += 1
-        c8 = input("Please choose one:")
-        if 0 < c8 < i:
-            config['CloudFlare']['IPv6ID'] = result['result'][c8]['id']
-        else:
-            print("Invalid input, use the first")
+                config['CloudFlare']['IPv4ID'] = ""
+        elif result['result_info']['count'] > 1:
+            i = 1
+            for j in result['result']:
+                print(str(i) + '.' + j)
+                i += 1
+            c6 = input("Please choose one:")
+            if 0 < c6 < i:
+                config['CloudFlare']['IPv4ID'] = result['result'][c6]['id']
+            else:
+                print("Invalid input, use the first")
+                config['CloudFlare']['IPv4ID'] = result['result'][0]['id']
+        if config['CloudFlare']['IPv4ID'] != "":
+            break
+    while True:
+        config['CloudFlare']['DOMAIN6'] = input("Please input DNS name for IPv6(eg. ddns.example.com)")
+        # check IPv6 domain name and get ID
+        print("Searching the record in Type [AAAA], name [" + config['CloudFlare']['DOMAIN6'] + "]")
+        result = checkrecord("AAAA", config['CloudFlare']['DOMAIN6'])
+        if result['result_info']['count'] == 1:
+            print("Check Type [AAAA], domain name [" + config['CloudFlare']['DOMAIN6'] + "] successfully!")
             config['CloudFlare']['IPv6ID'] = result['result'][0]['id']
+        elif result['result_info']['count'] == 0:
+            c7 = input("Nothing matched! Do you want to create this?(y/n, DEFAULT=n):")
+            if c7 == "y":
+                create = createdrecord("AAAA", config['CloudFlare']['DOMAIN6'])
+                if create['success']:
+                    config['CloudFlare']['IPv6ID'] = create['result']['id']
+                    print("Create Success!")
+                else:
+                    print(create['errors'][0]['message'])
+            else:
+                config['CloudFlare']['IPv6ID'] = ""
+        elif result['result_info']['count'] > 1:
+            i = 1
+            for j in result['result']:
+                print(str(i) + '.' + j)
+                i += 1
+            c8 = input("Please choose one:")
+            if 0 < c8 < i:
+                config['CloudFlare']['IPv6ID'] = result['result'][c8]['id']
+            else:
+                print("Invalid input, use the first")
+                config['CloudFlare']['IPv6ID'] = result['result'][0]['id']
+        if config['CloudFlare']['IPv6ID'] != "":
+            break
     config.write(open("config.ini", "w"))
     print("All Complete! You can enjoy LocalDDNS now!")
     exit()
