@@ -182,7 +182,7 @@ def configDDNS():
                 print(str(i) + '.' + j)
                 i += 1
             c6 = input("Please choose one:")
-            if 0 < c6 < i:
+            if 0 < int(c6) < i:
                 config['CloudFlare']['IPv4ID'] = result['result'][c6]['id']
             else:
                 print("Invalid input, use the first")
@@ -214,7 +214,7 @@ def configDDNS():
                 print(str(i) + '.' + j)
                 i += 1
             c8 = input("Please choose one:")
-            if 0 < c8 < i:
+            if 0 < int(c8) < i:
                 config['CloudFlare']['IPv6ID'] = result['result'][c8]['id']
             else:
                 print("Invalid input, use the first")
